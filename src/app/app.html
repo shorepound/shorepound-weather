@@ -330,11 +330,11 @@
       </div>
     </div>
   </div>
+<main>
+  <h1>{{ title() }}</h1>
+  <app-location-input (location)="onLocation($event)"></app-location-input>
+  <app-forecast [periods]="periods"></app-forecast>
 </main>
-
-<!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * -->
-<!-- * * * * * * * * * * * The content above * * * * * * * * * * * * -->
-<!-- * * * * * * * * * * is only a placeholder * * * * * * * * * * * -->
 <!-- * * * * * * * * * * and can be replaced.  * * * * * * * * * * * -->
 <!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * -->
 <!-- * * * * * * * * * * End of Placeholder  * * * * * * * * * * * * -->

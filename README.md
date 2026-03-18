@@ -1,3 +1,23 @@
+# spweather
+
+Simple Angular app that fetches and displays forecasts from https://api.weather.gov.
+
+Setup
+
+```bash
+# install deps
+npm install
+
+# run dev server
+npm start
+
+# open http://localhost:4200
+```
+
+Notes
+
+- The app sends a `User-Agent` header with contact info for api.weather.gov as required by their policy. Replace the placeholder in `src/app/weather.service.ts` with your email or app contact.
+- If you encounter CORS issues, consider adding a dev proxy or a small server-side proxy. The API generally supports CORS for public use.
 # SpweatherApp
 
 This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.2.2.
