@@ -6,16 +6,22 @@
   </section>
 
   <section style="margin-top:12px;">
-    <app-forecast [periods]="periods"></app-forecast>
+    <div *ngIf="loadingForecast">Loading forecast...</div>
+    <div *ngIf="forecastError" class="error">{{ forecastError }}</div>
+    <app-forecast *ngIf="!loadingForecast" [periods]="periods"></app-forecast>
   </section>
 
   <section style="margin-top:18px;">
     <app-zip-input (zipSubmit)="onZip($event)"></app-zip-input>
-    <div *ngIf="currentConditions" style="margin-top:8px;">
-      <h3>Current Conditions</h3>
-      <div>{{ currentConditions.textDescription }}</div>
-      <div *ngIf="currentConditions.temperature">Temperature: {{ currentConditions.temperature.value }} {{ currentConditions.temperature.unitCode }}</div>
-      <div *ngIf="currentConditions.windSpeed">Wind: {{ currentConditions.windSpeed }}</div>
+    <div style="margin-top:8px;">
+      <div *ngIf="loadingCurrent">Loading current conditions...</div>
+      <div *ngIf="currentError" class="error">{{ currentError }}</div>
+      <div *ngIf="currentConditions && !loadingCurrent">
+        <h3>Current Conditions</h3>
+        <div>{{ currentConditions.textDescription || currentConditions.summary || '—' }}</div>
+        <div *ngIf="currentConditions.temperature">Temperature: {{ currentConditions.temperature.value }} {{ currentConditions.temperature.unitCode }}</div>
+        <div *ngIf="currentConditions.windSpeed">Wind: {{ currentConditions.windSpeed }}</div>
+      </div>
     </div>
   </section>
 </main>

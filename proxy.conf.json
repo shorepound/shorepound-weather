@@ -1,0 +1,9 @@
+{
+  "/api": {
+    "target": "https://api.weather.gov",
+    "secure": true,
+    "changeOrigin": true,
+    "pathRewrite": { "^/api": "" },
+    "logLevel": "warn"
+  }
+}
