@@ -16,8 +16,8 @@ npm start
 
 Notes
 
-- The app sends a `User-Agent` header with contact info for api.weather.gov as required by their policy. Replace the placeholder in `src/app/weather.service.ts` with your email or app contact.
-- If you encounter CORS issues, consider adding a dev proxy or a small server-side proxy. The API generally supports CORS for public use.
+- Browsers forbid setting the `User-Agent` header from client-side JavaScript. To comply with api.weather.gov's request for a contact `User-Agent`, run a small server-side proxy or configure your dev proxy to add that header when forwarding requests to `https://api.weather.gov`.
+- For development, `proxy.conf.json` can be used to route `/api` to the weather API and inject headers at the proxy. For production, use a server-side proxy (e.g. an express route) that sets a proper `User-Agent` value with your contact email.
 # SpweatherApp
 
 This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.2.2.

@@ -1,10 +1,11 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-zip-input',
   standalone: true,
-  imports: [FormsModule],
+  imports: [FormsModule, CommonModule],
   template: `
     <form (ngSubmit)="submit()" #zipForm="ngForm" class="zip-form">
       <label for="zip">ZIP</label>
@@ -22,8 +23,8 @@ import { FormsModule } from '@angular/forms';
         autocomplete="postal-code"
       />
       <div *ngIf="zipModel.invalid && zipModel.touched" class="error">
-        <small *ngIf="zipModel.errors?.required">ZIP is required.</small>
-        <small *ngIf="zipModel.errors?.pattern || zipModel.errors?.minlength">Enter a 5-digit ZIP.</small>
+          <small *ngIf="zipModel.errors?.['required']">ZIP is required.</small>
+          <small *ngIf="zipModel.errors?.['pattern'] || zipModel.errors?.['minlength']">Enter a 5-digit ZIP.</small>
       </div>
       <button type="submit" [disabled]="zipForm.invalid">Search</button>
     </form>

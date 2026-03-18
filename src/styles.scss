@@ -1,1 +1,39 @@
 /* You can add global styles to this file, and also import other style files */
+
+:root {
+	--bg: #f6f8fa;
+	--text: #0f172a;
+	--accent: #0ea5a4;
+}
+
+body.theme-default { background: var(--bg); color: var(--text); }
+body.theme-clear { background: linear-gradient(180deg,#a7d8ff,#f0fbff); color:#052d4a; }
+body.theme-cloudy { background: linear-gradient(180deg,#d7dae0,#f3f4f6); color:#07122a; }
+body.theme-rain { background: linear-gradient(180deg,#9fb7c8,#e6f0f6); color:#05222f; }
+body.theme-snow { background: linear-gradient(180deg,#ffffff,#eaf6ff); color:#06324a; }
+body.theme-fog { background: linear-gradient(180deg,#e9edf0,#fbfbfd); color:#24313a; }
+body.theme-cold { background: linear-gradient(180deg,#dbeafe,#eef2ff); color:#06203a; }
+body.theme-warm { background: linear-gradient(180deg,#fff4e6,#fffaf0); color:#3b2f1b; }
+
+.app-root { max-width: 900px; margin: 24px auto; padding: 18px; font-family: Inter, Roboto, system-ui, -apple-system; }
+.app-header h1 { margin:0 0 6px 0; font-size: 1.6rem; }
+.subtitle { margin:0; color: rgba(0,0,0,0.6); font-size:0.9rem }
+.controls { margin-top: 14px; }
+.current { margin-top: 18px; }
+.current-card { display:flex; justify-content:space-between; align-items:center; padding:12px; border-radius:8px; background: rgba(255,255,255,0.6); box-shadow: 0 2px 8px rgba(2,6,23,0.06); }
+.current-main { display:flex; flex-direction:column; }
+.current-desc { font-size:1.1rem; font-weight:600 }
+.current-temp { font-size:1.8rem; font-weight:700 }
+.current-meta { text-align:right; min-width:140px }
+.forecast { margin-top: 18px }
+.loading { color: rgba(0,0,0,0.6) }
+.error { color: #b30000 }
+
+/* Make forecast component cards fit nicely */
+app-forecast { display:block }
+
+.wind-row { display:flex; align-items:center; gap:8px; justify-content:flex-end }
+.wind-icon { width:20px; height:20px; display:inline-block; transform-origin:center 10px; transition: transform .2s ease; }
+.wind-text { font-size:0.95rem }
+.wind-label { color: rgba(0,0,0,0.6); margin-right:6px }
+

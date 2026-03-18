@@ -1,27 +1,40 @@
-<main>
-  <h1>{{ title() }}</h1>
+<main class="app-root">
+  <header class="app-header">
+    <h1>{{ title() }}</h1>
+    <p class="subtitle">Enter a U.S. ZIP code to see current conditions and forecast.</p>
+  </header>
 
-  <section>
-    <app-location-input (location)="onLocation($event)"></app-location-input>
-  </section>
-
-  <section style="margin-top:12px;">
-    <div *ngIf="loadingForecast">Loading forecast...</div>
-    <div *ngIf="forecastError" class="error">{{ forecastError }}</div>
-    <app-forecast *ngIf="!loadingForecast" [periods]="periods"></app-forecast>
-  </section>
-
-  <section style="margin-top:18px;">
+  <section class="controls">
     <app-zip-input (zipSubmit)="onZip($event)"></app-zip-input>
-    <div style="margin-top:8px;">
-      <div *ngIf="loadingCurrent">Loading current conditions...</div>
-      <div *ngIf="currentError" class="error">{{ currentError }}</div>
-      <div *ngIf="currentConditions && !loadingCurrent">
-        <h3>Current Conditions</h3>
-        <div>{{ currentConditions.textDescription || currentConditions.summary || '—' }}</div>
-        <div *ngIf="currentConditions.temperature">Temperature: {{ currentConditions.temperature.value }} {{ currentConditions.temperature.unitCode }}</div>
-        <div *ngIf="currentConditions.windSpeed">Wind: {{ currentConditions.windSpeed }}</div>
+  </section>
+
+  <section class="current">
+    <div *ngIf="loadingCurrent" class="loading">Loading current conditions...</div>
+    <div *ngIf="currentError" class="error">{{ currentError }}</div>
+
+    <div *ngIf="currentConditions && !loadingCurrent" class="current-card">
+      <div class="current-main">
+        <div class="current-desc">{{ currentConditions.textDescription || currentConditions.summary || '—' }}</div>
+        <div class="current-temp">{{ formatTemperature(currentConditions.temperature) }}</div>
+      </div>
+      <div class="current-meta">
+        <div *ngIf="currentConditions.windSpeed" class="wind-row">
+          <span class="wind-label">Wind:</span>
+          <svg *ngIf="(currentConditions.windDirection?.value ?? currentConditions.windDirection) != null" class="wind-icon" viewBox="0 0 24 24" aria-hidden="true" [attr.title]="degToCardinal(currentConditions.windDirection?.value ?? currentConditions.windDirection)" [style.transform]="'rotate(' + (currentConditions.windDirection?.value ?? currentConditions.windDirection) + 'deg)'">
+            <path d="M12 2 L15 9 L12 7 L9 9 Z" fill="currentColor"></path>
+            <line x1="12" y1="7" x2="12" y2="22" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+          </svg>
+          <span class="wind-text">{{ formatWind(currentConditions.windSpeed, currentConditions.windDirection) }}</span>
+        </div>
+        <div *ngIf="currentConditions.relativeHumidity">Humidity: {{ formatHumidity(currentConditions.relativeHumidity) }}</div>
+        <div *ngIf="currentConditions.icon"><img [src]="currentConditions.icon" alt="icon" /></div>
       </div>
     </div>
+  </section>
+
+  <section class="forecast">
+    <div *ngIf="loadingForecast" class="loading">Loading forecast...</div>
+    <div *ngIf="forecastError" class="error">{{ forecastError }}</div>
+    <app-forecast *ngIf="!loadingForecast" [periods]="periods"></app-forecast>
   </section>
 </main>

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { environment } from '../../environments/environment';
+import { environment } from '../environments/environment';
 import { Observable, of } from 'rxjs';
 import { map, switchMap, catchError, shareReplay } from 'rxjs/operators';
 
@@ -27,7 +27,6 @@ interface ZipResponse {
 })
 export class WeatherService {
   private readonly base = environment.weatherApiBase || 'https://api.weather.gov';
-  private readonly userAgent = 'spweather/contact@example.com';
   private cache = new Map<string, Observable<any>>();
 
   constructor(private http: HttpClient) {}
@@ -35,7 +34,6 @@ export class WeatherService {
   private headers(): { headers: HttpHeaders } {
     return {
       headers: new HttpHeaders({
-        'User-Agent': this.userAgent,
         Accept: 'application/geo+json'
       })
     };
