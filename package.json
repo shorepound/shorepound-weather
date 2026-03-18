@@ -4,6 +4,10 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve --proxy-config proxy.conf.json",
+    "services:start": "bash ./scripts/manage-services.sh start",
+    "services:stop": "bash ./scripts/manage-services.sh stop",
+    "services:restart": "bash ./scripts/manage-services.sh restart",
+    "services:status": "bash ./scripts/manage-services.sh status",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
