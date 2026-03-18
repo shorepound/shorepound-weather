@@ -11,69 +11,66 @@ npm install
 # run dev server
 npm start
 
+# spweather
+
+Simple Angular app that fetches and displays forecasts and current conditions from api.weather.gov using a ZIP code.
+
+Quick start
+
+```bash
+# install dependencies
+npm install
+
+# start the dev server (uses the dev proxy)
+npm start
+
 # open http://localhost:4200
 ```
 
-Notes
+Dev helper scripts
 
-- Browsers forbid setting the `User-Agent` header from client-side JavaScript. To comply with api.weather.gov's request for a contact `User-Agent`, run a small server-side proxy or configure your dev proxy to add that header when forwarding requests to `https://api.weather.gov`.
-- For development, `proxy.conf.json` can be used to route `/api` to the weather API and inject headers at the proxy. For production, use a server-side proxy (e.g. an express route) that sets a proper `User-Agent` value with your contact email.
-# SpweatherApp
+- Start services (background): `npm run services:start`
+- Stop services: `npm run services:stop`
+- Restart services: `npm run services:restart`
+- Status: `npm run services:status`
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.2.2.
+Notes about the API and headers
 
-## Development server
+- Browsers forbid setting the `User-Agent` header from client-side JavaScript. The app does not set `User-Agent` in the browser. To comply with api.weather.gov's request for a contact `User-Agent`, run a small server-side proxy or configure your reverse proxy to add that header when forwarding requests.
+- The project includes a dev proxy (`proxy.conf.json`) which maps `/api` to `https://api.weather.gov`; this helps avoid CORS during development. The proxy alone cannot add `User-Agent` when running in the browser — use a server-side proxy to inject headers.
 
-To start a local development server, run:
+Dev proxy
 
-```bash
-ng serve
-```
+The development proxy is `proxy.conf.json`. It forwards `/api` to `https://api.weather.gov` so the app can call `/api/points/{lat},{lon}` and related endpoints in development.
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
-
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+Example: test the proxied endpoint locally
 
 ```bash
-ng generate component component-name
+curl -i http://localhost:4200/api/points/37.7725,-122.4147
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+If you need the server to add a `User-Agent` header, create a small Express proxy that sets the header and forwards to api.weather.gov, or use your preferred reverse proxy.
+
+Project structure highlights
+
+- `src/app/weather.service.ts` — encapsulates API calls and caching
+- `src/app/zip-input/zip-input.component.ts` — ZIP input and validation
+- `src/app/app.simple.html` & `src/styles.scss` — ZIP-first UI and theming
+- `proxy.conf.json` — dev proxy to `https://api.weather.gov`
+- `scripts/manage-services.sh` — start/stop/restart helper for local dev services
+
+Build
 
 ```bash
-ng generate --help
+npm run build
 ```
 
-## Building
-
-To build the project run:
+Tests
 
 ```bash
-ng build
+npm test
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+Contributing
 
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+Feel free to open a PR. Suggested next steps: add more unit tests, improve forecast presentation, or add a C/F toggle.
