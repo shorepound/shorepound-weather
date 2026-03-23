@@ -1,0 +1,4 @@
+RewriteEngine On
+SetEnv USER_AGENT shorepound01@gmail.com
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^ index.php [QSA,L]

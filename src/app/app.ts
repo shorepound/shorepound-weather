@@ -1,10 +1,12 @@
 import { Component, signal, OnInit } from '@angular/core';
 import { environment } from '../environments/environment';
 import { WeatherService } from './weather.service';
+import { NdbcService, NdbcStation, NdbcObservation } from './ndbc.service';
 import { ForecastComponent } from './forecast/forecast.component';
 import { ZipInputComponent } from './zip-input/zip-input.component';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { switchMap } from 'rxjs/operators';
 
 @Component({
   standalone: true,
@@ -22,7 +24,12 @@ export class App {
   forecastError: string | null = null;
   currentError: string | null = null;
 
-  constructor(private weather: WeatherService) {}
+  // NDBC buoy data
+  nearbyBuoys: (NdbcStation & { obs?: NdbcObservation | null; loading?: boolean })[] = [];
+  loadingBuoys = false;
+  buoyError: string | null = null;
+
+  constructor(private weather: WeatherService, private ndbc: NdbcService) {}
 
   ngOnInit(): void {
     const zip = environment.defaultZip;
@@ -163,6 +170,43 @@ export class App {
       error: err => {
         this.forecastError = String(err || 'Failed to load forecast');
         this.loadingForecast = false;
+      }
+    });
+
+    // load nearby NDBC buoys
+    this.nearbyBuoys = [];
+    this.buoyError = null;
+    this.loadingBuoys = true;
+    this.weather.getLatLonByZip(zip).subscribe({
+      next: loc => {
+        if (!loc) {
+          this.loadingBuoys = false;
+          return;
+        }
+        this.ndbc.findNearestStations(loc.lat, loc.lon, 3).subscribe({
+          next: stations => {
+            this.nearbyBuoys = stations.map(s => ({ ...s, loading: true }));
+            this.loadingBuoys = false;
+            // Load observation for each station
+            stations.forEach((s, i) => {
+              this.ndbc.getLatestObservation(s.id).subscribe({
+                next: obs => {
+                  this.nearbyBuoys[i] = { ...this.nearbyBuoys[i], obs, loading: false };
+                },
+                error: () => {
+                  this.nearbyBuoys[i] = { ...this.nearbyBuoys[i], obs: null, loading: false };
+                }
+              });
+            });
+          },
+          error: err => {
+            this.buoyError = 'Could not load buoy stations';
+            this.loadingBuoys = false;
+          }
+        });
+      },
+      error: () => {
+        this.loadingBuoys = false;
       }
     });
   }

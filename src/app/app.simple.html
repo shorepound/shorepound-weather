@@ -32,6 +32,72 @@
     </div>
   </section>
 
+  <section class="buoy-section" *ngIf="loadingBuoys || buoyError || nearbyBuoys.length">
+    <h2 class="section-title">Nearby Buoy Data</h2>
+    <div *ngIf="loadingBuoys" class="loading">Loading buoy stations...</div>
+    <div *ngIf="buoyError" class="error">{{ buoyError }}</div>
+    <div class="buoy-grid">
+      <div *ngFor="let buoy of nearbyBuoys" class="buoy-card">
+        <div class="buoy-header">
+          <span class="buoy-id">{{ buoy.id }}</span>
+          <span class="buoy-name" *ngIf="buoy.name">{{ buoy.name }}</span>
+          <span class="buoy-type">{{ buoy.type }}</span>
+          <span class="buoy-distance" *ngIf="buoy.distKm != null">{{ (buoy.distKm * 0.621371) | number:'1.0-0' }} mi</span>
+        </div>
+        <div *ngIf="buoy.loading" class="loading">Loading...</div>
+        <div *ngIf="buoy.obs && !buoy.loading" class="buoy-obs">
+          <div *ngIf="buoy.obs.waveHeightFt != null" class="buoy-stat">
+            <span class="buoy-label">Wave Height</span>
+            <span class="buoy-value">{{ buoy.obs.waveHeightFt }} ft <span class="buoy-sub">({{ buoy.obs['WVHT'] }} m)</span></span>
+          </div>
+          <div *ngIf="buoy.obs['DPD']" class="buoy-stat">
+            <span class="buoy-label">Dominant Period</span>
+            <span class="buoy-value">{{ buoy.obs['DPD'] }} sec</span>
+          </div>
+          <div *ngIf="buoy.obs['MWD']" class="buoy-stat">
+            <span class="buoy-label">Wave Direction</span>
+            <span class="buoy-value">{{ degToCardinal(+buoy.obs['MWD']) }} ({{ buoy.obs['MWD'] }}°)</span>
+          </div>
+          <div *ngIf="buoy.obs.waterTempF != null" class="buoy-stat">
+            <span class="buoy-label">Water Temp</span>
+            <span class="buoy-value">{{ buoy.obs.waterTempF }}°F <span class="buoy-sub">({{ buoy.obs['WTMP'] }}°C)</span></span>
+          </div>
+          <div *ngIf="buoy.obs.airTempF != null" class="buoy-stat">
+            <span class="buoy-label">Air Temp</span>
+            <span class="buoy-value">{{ buoy.obs.airTempF }}°F <span class="buoy-sub">({{ buoy.obs['ATMP'] }}°C)</span></span>
+          </div>
+          <div *ngIf="buoy.obs['WSPD']" class="buoy-stat">
+            <span class="buoy-label">Wind</span>
+            <span class="buoy-value">{{ buoy.obs['WSPD'] }} m/s
+              <span *ngIf="buoy.obs['WDIR']"> {{ degToCardinal(+buoy.obs['WDIR']) }}</span>
+              <span *ngIf="buoy.obs['GST']"> (gust {{ buoy.obs['GST'] }} m/s)</span>
+            </span>
+          </div>
+          <div *ngIf="buoy.obs['PRES']" class="buoy-stat">
+            <span class="buoy-label">Pressure</span>
+            <span class="buoy-value">{{ buoy.obs.pressureHpa ?? buoy.obs['PRES'] }} hPa</span>
+          </div>
+          <div *ngIf="buoy.obs.visibilityNm != null || buoy.obs['VIS']" class="buoy-stat">
+            <span class="buoy-label">Visibility</span>
+            <span class="buoy-value">{{ buoy.obs.visibilityNm ?? buoy.obs['VIS'] }} nmi</span>
+          </div>
+          <div *ngIf="buoy.obs.dewpointC != null || buoy.obs['DEWP']" class="buoy-stat">
+            <span class="buoy-label">Dew Point</span>
+            <span class="buoy-value">{{ buoy.obs.dewpointF }}°F <span class="buoy-sub">({{ buoy.obs.dewpointC }}°C)</span></span>
+          </div>
+          <div *ngIf="buoy.obs.timeISO" class="buoy-stat">
+            <span class="buoy-label">Observed</span>
+            <span class="buoy-value">{{ buoy.obs.timeISO | date:'medium' }}</span>
+          </div>
+          <div *ngIf="!buoy.obs['WVHT'] && !buoy.obs['WTMP'] && !buoy.obs['WSPD'] && !buoy.obs['ATMP']" class="buoy-empty">
+            No recent observations
+          </div>
+        </div>
+        <div *ngIf="!buoy.obs && !buoy.loading" class="buoy-empty">No data available</div>
+      </div>
+    </div>
+  </section>
+
   <section class="forecast">
     <div *ngIf="loadingForecast" class="loading">Loading forecast...</div>
     <div *ngIf="forecastError" class="error">{{ forecastError }}</div>

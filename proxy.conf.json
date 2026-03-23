@@ -5,5 +5,12 @@
     "changeOrigin": true,
     "pathRewrite": { "^/api": "" },
     "logLevel": "warn"
+  },
+  "/ndbc": {
+    "target": "https://www.ndbc.noaa.gov",
+    "secure": true,
+    "changeOrigin": true,
+    "pathRewrite": { "^/ndbc": "" },
+    "logLevel": "warn"
   }
 }
