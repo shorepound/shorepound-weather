@@ -198,6 +198,9 @@ export class App {
                 }
               });
             });
+            if (stations.length === 0) {
+              this.buoyError = 'No buoys found within 150 km (~93 miles) of that ZIP code.';
+            }
           },
           error: err => {
             this.buoyError = 'Could not load buoy stations';

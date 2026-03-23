@@ -34,17 +34,35 @@
 
   <section class="buoy-section" *ngIf="loadingBuoys || buoyError || nearbyBuoys.length">
     <h2 class="section-title">Nearby Buoy Data</h2>
-    <div *ngIf="loadingBuoys" class="loading">Loading buoy stations...</div>
-    <div *ngIf="buoyError" class="error">{{ buoyError }}</div>
+    <div *ngIf="loadingBuoys" aria-live="polite" class="loading">
+      Loading buoy stations...
+      <div class="buoy-grid" aria-hidden="true">
+        <div class="buoy-card skeleton" *ngFor="let n of [1,2,3]">
+          <div class="buoy-skeleton-header">
+            <div class="line buoy-skeleton-line"></div>
+            <div class="line buoy-skeleton-line" style="width:30%"></div>
+          </div>
+          <div class="buoy-skeleton-sub buoy-skeleton-line"></div>
+          <div class="buoy-skeleton-sub buoy-skeleton-line" style="width:80%"></div>
+        </div>
+      </div>
+    </div>
+    <div *ngIf="buoyError" class="error help" role="status">{{ buoyError }}</div>
     <div class="buoy-grid">
-      <div *ngFor="let buoy of nearbyBuoys" class="buoy-card">
+      <div *ngFor="let buoy of nearbyBuoys" class="buoy-card" [attr.aria-busy]="buoy.loading">
         <div class="buoy-header">
           <span class="buoy-id">{{ buoy.id }}</span>
           <span class="buoy-name" *ngIf="buoy.name">{{ buoy.name }}</span>
           <span class="buoy-type">{{ buoy.type }}</span>
           <span class="buoy-distance" *ngIf="buoy.distKm != null">{{ (buoy.distKm * 0.621371) | number:'1.0-0' }} mi</span>
         </div>
-        <div *ngIf="buoy.loading" class="loading">Loading...</div>
+        <div *ngIf="buoy.loading" class="buoy-obs">
+          <div class="buoy-stat">
+            <span class="buoy-label">Loading data</span>
+            <span class="buoy-value">—</span>
+          </div>
+          <div class="buoy-skeleton-sub buoy-skeleton-line"></div>
+        </div>
         <div *ngIf="buoy.obs && !buoy.loading" class="buoy-obs">
           <div *ngIf="buoy.obs.waveHeightFt != null" class="buoy-stat">
             <span class="buoy-label">Wave Height</span>
