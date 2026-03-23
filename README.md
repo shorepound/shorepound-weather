@@ -1,19 +1,14 @@
-# spweather
+# Shorepound Weather
 
-Simple Angular app that fetches and displays forecasts from https://api.weather.gov.
+A simple weather app built with curiosity and a love for both meteorology and clean code.
 
-Setup
+We combine official forecasts from api.weather.gov with real-time buoy and tide observations so you can quickly see conditions near any U.S. ZIP code. This project exists because weather is fascinating and technology makes it possible to bring timely, useful info to anyone with an internet connection.
 
-```bash
-# install deps
-npm install
+Key features
 
-# run dev server
-npm start
-
-# spweather
-
-Simple Angular app that fetches and displays forecasts and current conditions from api.weather.gov using a ZIP code.
+- ZIP-based forecast and current-conditions lookup (api.weather.gov)
+- Nearby NDBC buoy observations (waves, wind, water temp)
+- NOAA CO-OPS support for tide/water-level and water-temperature stations
 
 Quick start
 
@@ -21,56 +16,45 @@ Quick start
 # install dependencies
 npm install
 
-# start the dev server (uses the dev proxy)
+# start dev server (uses proxy.conf.json to forward /api and /ndbc)
 npm start
 
 # open http://localhost:4200
 ```
 
-Dev helper scripts
+Deployment
 
-- Start services (background): `npm run services:start`
-- Stop services: `npm run services:stop`
-- Restart services: `npm run services:restart`
-- Status: `npm run services:status`
+- The production build lives in `dist/spweather-app/browser/`.
+- Static files can be uploaded to your web host (example: `/home/spweather/weather.shorepound.net/`).
+- The repository includes PHP proxy endpoints (`proxy/php/`) used in production to add a `User-Agent` and avoid CORS.
 
-Notes about the API and headers
+Developer notes
 
-- Browsers forbid setting the `User-Agent` header from client-side JavaScript. The app does not set `User-Agent` in the browser. To comply with api.weather.gov's request for a contact `User-Agent`, run a small server-side proxy or configure your reverse proxy to add that header when forwarding requests.
-- The project includes a dev proxy (`proxy.conf.json`) which maps `/api` to `https://api.weather.gov`; this helps avoid CORS during development. The proxy alone cannot add `User-Agent` when running in the browser — use a server-side proxy to inject headers.
+- Browsers cannot set the `User-Agent` header from client-side JavaScript. To comply with api.weather.gov guidance, run the app behind a server-side proxy that sets a contact `User-Agent` (the PHP proxy in `proxy/php/` is one option).
+- The dev proxy (`proxy.conf.json`) forwards `/api` to `https://api.weather.gov` and `/ndbc` to NDBC feeds to ease local development.
 
-Dev proxy
+Project layout highlights
 
-The development proxy is `proxy.conf.json`. It forwards `/api` to `https://api.weather.gov` so the app can call `/api/points/{lat},{lon}` and related endpoints in development.
+- `src/app/weather.service.ts` — forecast/current weather lookups and caching
+- `src/app/ndbc.service.ts` — NDBC station parsing and realtime2 text parsing
+- `src/app/coops.service.ts` — CO-OPS datagetter integration (water level, temp)
+- `src/app/app.simple.html` & `src/styles.scss` — main UI and theming
+- `proxy/ndbc/` and `proxy/php/` — production proxy endpoints
 
-Example: test the proxied endpoint locally
-
-```bash
-curl -i http://localhost:4200/api/points/37.7725,-122.4147
-```
-
-If you need the server to add a `User-Agent` header, create a small Express proxy that sets the header and forwards to api.weather.gov, or use your preferred reverse proxy.
-
-Project structure highlights
-
-- `src/app/weather.service.ts` — encapsulates API calls and caching
-- `src/app/zip-input/zip-input.component.ts` — ZIP input and validation
-- `src/app/app.simple.html` & `src/styles.scss` — ZIP-first UI and theming
-- `proxy.conf.json` — dev proxy to `https://api.weather.gov`
-- `scripts/manage-services.sh` — start/stop/restart helper for local dev services
-
-Build
+Build & test
 
 ```bash
 npm run build
-```
-
-Tests
-
-```bash
 npm test
 ```
 
 Contributing
 
-Feel free to open a PR. Suggested next steps: add more unit tests, improve forecast presentation, or add a C/F toggle.
+Contributions, bug reports, and PRs are welcome — whether it's UX polish, improved parsing, or more station sources. If you like the project, star the repo and tell a friend who cares about waves.
+
+Contact
+
+If you run this in production, please set a contact `User-Agent` header for upstream APIs (we use shorepound01@gmail.com for this project). Feel free to open issues or PRs on GitHub.
+
+---
+Built with love and curiosity — Shorepound
