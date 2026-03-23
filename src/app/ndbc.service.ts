@@ -12,6 +12,8 @@ export interface NdbcStation {
   type: string;
   owner: string;
   distKm?: number;
+  pgm?: string;
+  source?: 'ndbc' | 'coops';
 }
 
 export interface NdbcObservation {
@@ -210,8 +212,19 @@ export class NdbcService {
       const name = el.getAttribute('name') || '';
       const type = el.getAttribute('type') || '';
       const owner = el.getAttribute('owner') || '';
-      if (id && !isNaN(lat) && !isNaN(lon)) {
-        stations.push({ id, lat, lon, name, type, owner });
+      const pgm = el.getAttribute('pgm') || '';
+
+      // Determine the likely data source for this station.
+      const isNdbc = (owner && owner.toLowerCase().includes('ndbc')) ||
+        (pgm && pgm.toLowerCase().includes('ndbc')) ||
+        (type && type.toLowerCase() === 'buoy');
+      const isCoops = (owner && owner.toLowerCase().includes('nos')) ||
+        (pgm && pgm.toLowerCase().includes('co-ops')) ||
+        (pgm && pgm.toLowerCase().includes('coops'));
+
+      if (id && !isNaN(lat) && !isNaN(lon) && (isNdbc || isCoops)) {
+        const source = isNdbc ? 'ndbc' : 'coops';
+        stations.push({ id, lat, lon, name, type, owner, pgm, source });
       }
     });
 

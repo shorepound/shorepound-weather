@@ -2,6 +2,7 @@ import { Component, signal, OnInit } from '@angular/core';
 import { environment } from '../environments/environment';
 import { WeatherService } from './weather.service';
 import { NdbcService, NdbcStation, NdbcObservation } from './ndbc.service';
+import { CoopsService } from './coops.service';
 import { ForecastComponent } from './forecast/forecast.component';
 import { ZipInputComponent } from './zip-input/zip-input.component';
 import { CommonModule } from '@angular/common';
@@ -25,11 +26,11 @@ export class App {
   currentError: string | null = null;
 
   // NDBC buoy data
-  nearbyBuoys: (NdbcStation & { obs?: NdbcObservation | null; loading?: boolean })[] = [];
+  nearbyBuoys: (NdbcStation & { obs?: any | null; loading?: boolean })[] = [];
   loadingBuoys = false;
   buoyError: string | null = null;
 
-  constructor(private weather: WeatherService, private ndbc: NdbcService) {}
+  constructor(private weather: WeatherService, private ndbc: NdbcService, private coops: CoopsService) {}
 
   ngOnInit(): void {
     const zip = environment.defaultZip;
@@ -187,16 +188,27 @@ export class App {
           next: stations => {
             this.nearbyBuoys = stations.map(s => ({ ...s, loading: true }));
             this.loadingBuoys = false;
-            // Load observation for each station
+            // Load observation for each station. Use CO-OPS for stations marked as 'coops'.
             stations.forEach((s, i) => {
-              this.ndbc.getLatestObservation(s.id).subscribe({
-                next: obs => {
-                  this.nearbyBuoys[i] = { ...this.nearbyBuoys[i], obs, loading: false };
-                },
-                error: () => {
-                  this.nearbyBuoys[i] = { ...this.nearbyBuoys[i], obs: null, loading: false };
-                }
-              });
+              if ((s as any).source === 'coops') {
+                this.coops.getLatestObservation(s.name || s.id).subscribe({
+                  next: obs => {
+                    this.nearbyBuoys[i] = { ...this.nearbyBuoys[i], obs, loading: false };
+                  },
+                  error: () => {
+                    this.nearbyBuoys[i] = { ...this.nearbyBuoys[i], obs: null, loading: false };
+                  }
+                });
+              } else {
+                this.ndbc.getLatestObservation(s.id).subscribe({
+                  next: obs => {
+                    this.nearbyBuoys[i] = { ...this.nearbyBuoys[i], obs, loading: false };
+                  },
+                  error: () => {
+                    this.nearbyBuoys[i] = { ...this.nearbyBuoys[i], obs: null, loading: false };
+                  }
+                });
+              }
             });
             if (stations.length === 0) {
               this.buoyError = 'No buoys found within 150 km (~93 miles) of that ZIP code.';
