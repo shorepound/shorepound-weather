@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const fetch = (...args) => import('node-fetch').then(m => m.default(...args));
 const morgan = require('morgan');
