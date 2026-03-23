@@ -1,5 +1,5 @@
 export const environment = {
   production: true,
-  weatherApiBase: 'https://api.weather.gov',
+  weatherApiBase: 'https://weather.shorepound.net/api',
   defaultZip: '94103'
 };
