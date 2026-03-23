@@ -1,0 +1,6 @@
+RewriteEngine On
+# Provide a USER_AGENT via environment if desired (can be set in the host config)
+SetEnv USER_AGENT shorepound01@gmail.com
+# If the request is not for an existing file, rewrite to index.php
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^ index.php [QSA,L]

@@ -2,10 +2,10 @@
 set -euo pipefail
 
 # Deploy static build and optional proxy to DreamHost via rsync/ssh.
-# Environment variables required:
-#   DREAMHOST_USER (ssh user)
-#   DREAMHOST_HOST (host e.g. example.com)
-#   DREAMHOST_STATIC_PATH (remote webroot for weather subdomain)
+# Environment variables required (examples):
+#   DREAMHOST_USER="spweather"
+#   DREAMHOST_HOST="shorepound.net"
+#   DREAMHOST_STATIC_PATH="/home/spweather/weather.shorepound.net"
 #   DREAMHOST_PROXY_PATH (optional remote path for proxy app)
 
 if [ -z "${DREAMHOST_USER-}" ] || [ -z "${DREAMHOST_HOST-}" ] || [ -z "${DREAMHOST_STATIC_PATH-}" ]; then
